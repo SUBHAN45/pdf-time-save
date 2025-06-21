@@ -21,9 +21,38 @@ except ImportError:
 
 # 4. Main Processing Function
 def process_pdfs(pdf1, pdf2, pdf3):
-    # (Processing logic here)
-    return results_dataframe
-    # Rest of your app code
+    results = []  # This will store our matched data
+    
+    # 1. Extract text from all PDFs
+    pdf1_text = safe_extract_text(pdf1)
+    pdf2_text = safe_extract_text(pdf2)
+    pdf3_text = safe_extract_text(pdf3)
+    
+    # 2. Process PDF1 to find dates
+    for line in pdf1_text.split('\n'):
+        date_match = re.search(r'\d{2}/\d{2}/\d{4}', line)
+        if date_match:
+            date = date_match.group()
+            
+            # 3. Search PDF2 for this date
+            for line2 in pdf2_text.split('\n'):
+                if date in line2:
+                    # Extract amount and account number
+                    amount = re.search(r'\b\d+\b', line2).group()
+                    acc_num = re.search(r'[A-Z]{2,3}\d+', line2).group()
+                    
+                    # 4. Search PDF3 for account number
+                    for line3 in pdf3_text.split('\n'):
+                        if acc_num in line3:
+                            name = line3.split(acc_num)[-1].strip()
+                            results.append({
+                                "Date": date,
+                                "Amount": amount,
+                                "Account": acc_num,
+                                "Name": name
+                            })
+    
+    return pd.DataFrame(results)  # Return as DataFrame
 
 # 5. File Upload & Processing
 st.sidebar.header("📤 Upload PDF Files")
