@@ -18,6 +18,9 @@ def extract_text_from_pdf(pdf_file):
 def process_pdfs(pdf1, pdf2, pdf3):
     # (Processing logic here)
     return results_dataframe
+    if __name__ == "__main__":
+    st.title("PDF Matcher")
+    # Rest of your app code
 
 # 5. File Upload & Processing
 st.sidebar.header("📤 Upload PDF Files")
@@ -45,3 +48,9 @@ if st.sidebar.button("🔍 Process PDFs") and pdf1 and pdf2 and pdf3:
         st.warning("⚠️ No matching records found.")
 else:
     st.info("ℹ️ Please upload all 3 PDF files first.")
+
+try:
+    from pdfminer.high_level import extract_text
+except ImportError:
+    st.error("Please install pdfminer.six: pip install pdfminer.six")
+    st.stop()
