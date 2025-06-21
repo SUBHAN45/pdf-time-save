@@ -13,12 +13,20 @@ st.write("Upload 3 PDFs to match dates, amounts, and customer names.")
 # 3. PDF Text Extraction Function
 def extract_text_from_pdf(pdf_file):
     return extract_text(pdf_file)
-    try:
+    try:    
     from pdfminer.high_level import extract_text
 except ImportError:
-    st.error("Please install pdfminer.six: pip install pdfminer.six")
-    st.stop()
+    import sys
+    print("Error: Missing required package 'pdfminer.six'", file=sys.stderr)
+    print("Please install it using: pip install pdfminer.six", file=sys.stderr)
+    sys.exit(1)
 
+# Other imports (no indentation needed)
+import streamlit as st
+import pandas as pd
+import re
+from datetime import datetime
+import base64
 # 4. Main Processing Function
 def process_pdfs(pdf1, pdf2, pdf3):
     results = []  # This will store our matched data
